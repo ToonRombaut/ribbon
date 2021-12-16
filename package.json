@@ -7,6 +7,8 @@
         "serve": "vite preview"
     },
     "dependencies": {
+        "dat.gui": "^0.7.7",
+        "gsap": "^3.8.0",
         "three": "^0.133.1",
         "three-orbit-controls": "^82.1.0",
         "vite-aliases": "^0.8.7",
@@ -20,5 +22,5 @@
         "sass": "^1.42.1",
         "vite": "^2.0.5"
     },
-    "packageManager": "yarn@3.0.2"
+    "packageManager": "yarn@3.1.1"
 }
