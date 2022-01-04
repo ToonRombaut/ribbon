@@ -1,9 +1,6 @@
 import * as THREE from "three";
-import fragment from "@three/shaders/fragment.glsl?raw";
-import vertex from "@three/shaders/vertex.glsl?raw";
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import * as dat from "dat.gui";
-import gsap from "gsap";
 import front from "@assets/img/ribbon1.png";
 import back from "@assets/img/ribbon2.png";
 
@@ -37,14 +34,13 @@ export default class Sketch {
         this.controls.enabled = false;
 
         this.clock = new THREE.Clock();
-        this.setupRaycaster();
+        this.setupMouseEvents();
         this.settings();
         this.setupResize();
         this.addLights();
 
     }
-    setupRaycaster = () => {
-        this.raycaster = new THREE.Raycaster();
+    setupMouseEvents = () => {
         this.mouse = new THREE.Vector2();
         window.addEventListener("mousemove", this.onMouseMove, false);
     };
@@ -90,8 +86,6 @@ export default class Sketch {
             t.repeat.set(1, -1);
             t.offset.setX(0.5);
             t.anisotropy = this.renderer.capabilities.getMaxAnisotropy();
-            //t.generateMipmaps = false;
-            //t.mipmaps = [t];
         });
         backTexture.repeat.set(-1, -1);
 
@@ -120,13 +114,14 @@ export default class Sketch {
         const curve = new THREE.CatmullRomCurve3(curvePoints);
         curve.tension = 0.7;
         curve.closed = true;
+
         const number = 1000;
         let frenetFrames = curve.computeFrenetFrames(number, true);
         let spacedPoints = curve.getSpacedPoints(number);
-        let tempPlane = new THREE.PlaneBufferGeometry(1, 1, number, 1);
+        let plane = new THREE.PlaneBufferGeometry(1, 1, number, 1);
         this.materials = [frontMaterial, backMaterial];
-        tempPlane.addGroup(0, 6000, 0);
-        tempPlane.addGroup(0, 6000, 1);
+        plane.addGroup(0, 6000, 0);
+        plane.addGroup(0, 6000, 1);
         let dimensions = [-0.2, 0.2];
         let point = new THREE.Vector3();
         let binormalShift = new THREE.Vector3();
@@ -141,8 +136,8 @@ export default class Sketch {
         });
         finalPoints[0].copy(finalPoints[number]);
         finalPoints[number + 1].copy(finalPoints[2 * number + 1]);
-        tempPlane.setFromPoints(finalPoints);
-        this.finalMesh = new THREE.Mesh(tempPlane, this.materials);
+        plane.setFromPoints(finalPoints);
+        this.finalMesh = new THREE.Mesh(plane, this.materials);
         this.scene.add(this.finalMesh);
     };
 
@@ -153,7 +148,6 @@ export default class Sketch {
             m.map.offset.setX(offset);
             if (i > 0) m.map.offset.setX(-offset);
         });
-        // this.camera.rotation.x += (this.mouse.x * 2 - this.camera.rotation.x);
         this.finalMesh.rotation.y = this.lerp(this.finalMesh.rotation.y, this.mouse.x, 0.1);
         this.finalMesh.rotation.x = this.lerp(this.finalMesh.rotation.x, -this.mouse.y * 0.5, 0.05);;
         requestAnimationFrame(this.render);
