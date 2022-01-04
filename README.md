@@ -1,4 +1,4 @@
-# Dna
+# Ribbon
 
 This projects is about animating a floating, interactive ribbon.
 ![preview image](https://i.imgur.com/dQNx5UG.png)
